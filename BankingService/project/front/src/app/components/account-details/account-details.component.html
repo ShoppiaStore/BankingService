@@ -1,0 +1,73 @@
+<div class="account-details-container">
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
+    <h1>Account Details</h1>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading account details...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && account" class="account-content">
+    <!-- Account Information Card -->
+    <div class="account-info-card">
+      <div class="account-header">
+        <h2>{{ account.accountName }}</h2>
+        <span class="account-type">{{ getAccountTypeText(account.accountType) }}</span>
+      </div>
+      
+      <div class="account-details">
+        <div class="detail-row">
+          <span class="label">Card Number:</span>
+          <span class="value">{{ maskCardNumber(account.cardNumber) }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="label">الرصيد الحالي:</span>
+          <span class="balance-amount">{{ account.balance | currency:(account.accountType === 'Dollar' ? 'USD' : 'EGP'):'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="transaction-history">
+      <h3>Transaction History</h3>
+      
+      <div *ngIf="transactions.length === 0" class="no-transactions">
+        <p>No transactions yet</p>
+      </div>
+
+      <div *ngIf="transactions.length > 0" class="transactions-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Balance After</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let transaction of transactions" [class]="getTransactionTypeClass(transaction.type)">
+              <td>{{ transaction.transactionDate | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <span class="transaction-type" [class]="getTransactionTypeClass(transaction.type)">
+                  {{ getTransactionTypeText(transaction.type) }}
+                </span>
+              </td>
+              <td>{{ transaction.amount | currency:(account.accountType === 'Dollar' ? 'USD' : 'EGP'):'symbol':'1.2-2' }}</td>
+              <td>{{ transaction.balanceAfter | currency:(account.accountType === 'Dollar' ? 'USD' : 'EGP'):'symbol':'1.2-2' }}</td>
+              <td>{{ transaction.notes || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

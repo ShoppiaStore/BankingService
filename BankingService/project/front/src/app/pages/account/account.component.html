@@ -1,0 +1,150 @@
+<div *ngIf="name && cardNumber; else noAccount">
+  <div class="account-info">
+    <h2>Account Details</h2>
+    <div><b>Name:</b> {{ name }}</div>
+    <div><b>Card Number:</b> {{ cardNumber }}</div>
+    <div><b>Balance:</b> {{ balance }} EGP</div>
+    <button (click)="openEdit()">Edit Account</button>
+  </div>
+
+  <div *ngIf="editMode" class="edit-form">
+    <h3>Edit Account</h3>
+    <input type="text" [(ngModel)]="editName" placeholder="Name" />
+    <input type="text" [(ngModel)]="editCardNumber" placeholder="Card Number" />
+    <input type="number" [(ngModel)]="editBalance" placeholder="Balance" />
+    <button (click)="saveEdit()">Save</button>
+    <button (click)="cancelEdit()">Cancel</button>
+    <div *ngIf="message" class="success">{{ message }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </div>
+
+  <div class="actions">
+    <button (click)="openDeposit()">Deposit</button>
+    <button (click)="openWithdraw()">Withdraw</button>
+  </div>
+
+  <div *ngIf="showDeposit" class="action-form">
+    <h3>Deposit</h3>
+    <input type="number" [(ngModel)]="depositAmount" placeholder="Amount" />
+    <input type="text" [(ngModel)]="depositNotes" placeholder="Notes" />
+    <button (click)="submitDeposit()">Submit</button>
+    <button (click)="closeForms()">Cancel</button>
+    <div *ngIf="message" class="success">{{ message }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </div>
+
+  <div *ngIf="showWithdraw" class="action-form">
+    <h3>Withdraw</h3>
+    <input type="number" [(ngModel)]="withdrawAmount" placeholder="Amount" />
+    <input type="text" [(ngModel)]="withdrawNotes" placeholder="Notes" />
+    <button (click)="submitWithdraw()">Submit</button>
+    <button (click)="closeForms()">Cancel</button>
+    <div *ngIf="message" class="success">{{ message }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </div>
+
+  <div class="history">
+    <h3>Transaction History</h3>
+    <table *ngIf="transactions.length > 0">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of transactions">
+        
+          <td>{{ t.displayDate | date:'short' }}</td>
+
+
+          <td>{{ t.type || t.transactionType }}</td>
+          <td>{{ t.amount }}</td>
+          <td>{{ t.notes }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="transactions.length === 0">No transactions found.</div>
+  </div>
+</div>
+<ng-template #noAccount>
+  <button (click)="openAddAccount = true">Create Account</button>
+  <div *ngIf="openAddAccount" class="add-account-modal">
+    <h3>Add New Account</h3>
+    <input type="text" [(ngModel)]="addCardNumber" placeholder="Card Number" />
+    <input type="text" [(ngModel)]="addName" placeholder="Name" />
+    <input type="number" [(ngModel)]="addBalance" placeholder="Balance" />
+    <button (click)="submitAddAccount()">Add</button>
+    <button (click)="openAddAccount = false">Cancel</button>
+    <div *ngIf="addMessage" class="success">{{ addMessage }}</div>
+    <div *ngIf="addError" class="error">{{ addError }}</div>
+  </div>
+</ng-template>
+
+<style>
+.account-info, .edit-form, .action-form, .history {
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 18px 16px;
+}
+input[type="text"], input[type="number"] {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+}
+button {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+button:hover {
+  background: #1256a3;
+}
+.success {
+  color: #388e3c;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+.error {
+  color: #d32f2f;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+th, td {
+  border: 1px solid #eee;
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background: #f0f4ff;
+}
+.add-account-modal {
+  background: #f7faff;
+  border: 1px solid #1976d2;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 18px;
+  margin-top: 18px;
+}
+</style>

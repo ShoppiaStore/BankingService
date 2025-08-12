@@ -1,0 +1,40 @@
+<div class="welcome-container">
+  <h2>Welcome!</h2>
+  <p *ngIf="userEmail">Logged in as <b>{{ userEmail }}</b></p>
+  <button (click)="logout()">Logout</button>
+</div>
+
+<style>
+.welcome-container {
+  max-width: 350px;
+  margin: 60px auto;
+  padding: 32px 24px 24px 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #0001;
+  text-align: center;
+}
+.welcome-container h2 {
+  margin-bottom: 18px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.welcome-container p {
+  margin-bottom: 18px;
+  font-size: 1.1rem;
+}
+.welcome-container button {
+  padding: 10px 24px;
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.welcome-container button:hover {
+  background: #a31515;
+}
+</style>

@@ -1,0 +1,108 @@
+<div class="verify-container">
+  <h2>Verify OTP</h2>
+  <form (ngSubmit)="onSubmit()" #verifyForm="ngForm">
+    <div class="form-group" *ngIf="!email">
+      <label>Email</label>
+      <input type="email" name="email" [(ngModel)]="emailInput" required />
+    </div>
+    <div class="form-group" *ngIf="email">
+      <p class="email-display">Email: <b>{{ email }}</b></p>
+    </div>
+    <div class="form-group">
+      <label>Enter OTP</label>
+      <input type="text" name="otp" [(ngModel)]="otp" required maxlength="6" placeholder="Enter 6-digit OTP" />
+    </div>
+    <button type="submit" [disabled]="loading">Verify OTP</button>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="success" class="success">{{ success }}</div>
+    <div class="login-link">
+      <button type="button" (click)="goToLogin()">Back to Login</button>
+    </div>
+  </form>
+</div>
+
+<style>
+.verify-container {
+  max-width: 350px;
+  margin: 60px auto;
+  padding: 32px 24px 24px 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #0001;
+}
+.verify-container h2 {
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.email-display {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 1rem;
+  color: #666;
+}
+.form-group {
+  margin-bottom: 18px;
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+input[type="email"], input[type="text"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+input[type="text"] {
+  text-align: center;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background: #ff9800;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+button[type="submit"]:hover {
+  background: #e68900;
+}
+.error {
+  color: #d32f2f;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.success {
+  color: #388e3c;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+.login-link {
+  text-align: center;
+}
+.login-link button {
+  background: none;
+  color: #ff9800;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 8px;
+}
+.login-link button:hover {
+  color: #e68900;
+}
+</style>

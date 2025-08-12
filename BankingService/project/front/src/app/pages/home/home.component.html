@@ -1,0 +1,80 @@
+<div class="home-content">
+  <ng-container *ngIf="account; else noAccount">
+    <h3>Your Account</h3>
+    <div class="account-info">
+      <div><b>Name:</b> {{ account.name }}</div>
+      <div><b>Card Number:</b> {{ account.cardNumber }}</div>
+      <div><b>Balance:</b> {{ account.balance }} EGP</div>
+    </div>
+  </ng-container>
+  <ng-template #noAccount>
+    <div *ngIf="showAddAccount" class="add-account-modal">
+      <h3>Add New Account</h3>
+      <form (ngSubmit)="submitAddAccount()" #addAccountForm="ngForm">
+        <input type="text" placeholder="Card Number" [(ngModel)]="addCardNumber" name="addCardNumber" required />
+        <input type="text" placeholder="Name" [(ngModel)]="addName" name="addName" required />
+        <input type="number" placeholder="Balance" [(ngModel)]="addBalance" name="addBalance" required />
+        <button type="submit">Add Account</button>
+        <button type="button" (click)="closeAddAccount()">Cancel</button>
+      </form>
+      <div *ngIf="addMessage" class="success">{{ addMessage }}</div>
+      <div *ngIf="addError" class="error">{{ addError }}</div>
+    </div>
+  </ng-template>
+</div>
+
+<style>
+.home-content {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 32px 24px;
+}
+.account-info {
+  font-size: 1.1rem;
+  margin-bottom: 18px;
+}
+.create-account-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 18px;
+}
+.create-account-btn:hover {
+  background: #1256a3;
+}
+.add-account-modal {
+  background: #f7faff;
+  border: 1px solid #1976d2;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+input[type="text"], input[type="number"] {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+}
+.success {
+  color: #388e3c;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+.error {
+  color: #d32f2f;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+</style>

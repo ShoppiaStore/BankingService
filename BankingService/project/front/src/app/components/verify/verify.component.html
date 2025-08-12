@@ -1,0 +1,56 @@
+<div class="verify-container">
+  <div class="verify-card">
+    <h2>تأكيد الحساب</h2>
+    
+    <div class="email-info">
+      <p>تم إرسال رمز التحقق إلى:</p>
+      <strong>{{ email }}</strong>
+    </div>
+    
+    <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="verify-form">
+      <div class="form-group">
+        <label for="otp">رمز التحقق</label>
+        <input 
+          type="text" 
+          id="otp" 
+          formControlName="otp" 
+          placeholder="أدخل رمز التحقق المكون من 6 أرقام"
+          maxlength="6"
+          [class.error]="verifyForm.get('otp')?.invalid && verifyForm.get('otp')?.touched"
+        >
+        <div class="error-message" *ngIf="verifyForm.get('otp')?.invalid && verifyForm.get('otp')?.touched">
+          <span *ngIf="verifyForm.get('otp')?.errors?.['required']">رمز التحقق مطلوب</span>
+          <span *ngIf="verifyForm.get('otp')?.errors?.['minlength'] || verifyForm.get('otp')?.errors?.['maxlength']">رمز التحقق يجب أن يكون 6 أرقام</span>
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+
+      <button 
+        type="submit" 
+        [disabled]="verifyForm.invalid || loading"
+        class="verify-btn"
+      >
+        <span *ngIf="loading" class="spinner"></span>
+        {{ loading ? 'جاري التحقق...' : 'تأكيد الحساب' }}
+      </button>
+    </form>
+
+    <div class="resend-section">
+      <p>لم تستلم الرمز؟</p>
+      <button type="button" (click)="resendOtp()" class="resend-btn">
+        إعادة إرسال الرمز
+      </button>
+    </div>
+
+    <div class="back-link">
+      <a routerLink="/login">العودة لصفحة تسجيل الدخول</a>
+    </div>
+  </div>
+</div>

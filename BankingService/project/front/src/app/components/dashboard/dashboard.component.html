@@ -1,0 +1,113 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Welcome to Online Banking</h1>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="dashboard-actions">
+      <button class="create-account-btn" (click)="toggleCreateForm()">
+        + Create New Account
+      </button>
+    </div>
+
+    <!-- Create Account Form -->
+    <div *ngIf="showCreateForm" class="create-account-form">
+      <h3>Create New Account</h3>
+      <form [formGroup]="createAccountForm" (ngSubmit)="createAccount()">
+        <div class="form-group">
+          <label for="accountName">Account Name</label>
+          <input 
+            type="text" 
+            id="accountName" 
+            formControlName="accountName" 
+            placeholder="Enter account name"
+            [class.error]="createAccountForm.get('accountName')?.invalid && createAccountForm.get('accountName')?.touched"
+          >
+          <div class="error-message" *ngIf="createAccountForm.get('accountName')?.invalid && createAccountForm.get('accountName')?.touched">
+            <span *ngIf="createAccountForm.get('accountName')?.errors?.['required']">Account name is required</span>
+            <span *ngIf="createAccountForm.get('accountName')?.errors?.['minlength']">Account name must be at least 3 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="accountType">Account Type</label>
+          <select 
+            id="accountType" 
+            formControlName="accountType"
+            [class.error]="createAccountForm.get('accountType')?.invalid && createAccountForm.get('accountType')?.touched"
+          >
+            <option value="SAVINGS">حساب توفير</option>
+            <option value="CHECKING">حساب جاري</option>
+            <option value="BUSINESS">حساب تجاري</option>
+            <option value="CREDIT">حساب ائتمان</option>
+            <option value="Dollar">حساب دولار</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            [disabled]="createAccountForm.invalid || creating"
+            class="create-btn"
+          >
+            <span *ngIf="creating" class="spinner"></span>
+            {{ creating ? 'Creating...' : 'Create Account' }}
+          </button>
+          <button type="button" (click)="toggleCreateForm()" class="cancel-btn">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="accounts-section">
+      <h2>My Accounts</h2>
+      
+      <div *ngIf="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading accounts...</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="!loading && !errorMessage && accounts.length === 0" class="no-accounts">
+        <p>No accounts found</p>
+        <button class="create-account-btn" (click)="toggleCreateForm()">
+          Create your first account!
+        </button>
+      </div>
+
+      <div class="accounts-grid" *ngIf="!loading && accounts.length > 0">
+        <div 
+          class="account-card" 
+          *ngFor="let account of accounts"
+          (click)="viewAccountDetails(account.id!)"
+        >
+          <div class="account-header">
+            <h3>{{ account.accountName }}</h3>
+            <span class="account-type">{{ getAccountTypeText(account.accountType) }}</span>
+          </div>
+          
+          <div class="account-details">
+            <div class="card-number">
+              {{ maskCardNumber(account.cardNumber) }}
+            </div>
+            <div class="balance">
+              <span class="balance-label">الرصيد الحالي:</span>
+              <span class="balance-amount">{{ account.balance | currency:(account.accountType === 'Dollar' ? 'USD' : 'EGP'):'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+          
+          <div class="account-actions">
+            <button class="view-details-btn">View Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
