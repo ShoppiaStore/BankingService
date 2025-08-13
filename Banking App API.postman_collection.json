@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "4d913ae0-8c4d-4729-8f2f-548207a646d2",
+		"name": "Banking App API",
+		"description": "Collection for Banking Application REST API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "40721589"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Note: If register returns 401, use Login endpoint separately",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('auth_token', response.token);",
+									"    pm.environment.set('user_id', response.id);",
+									"    pm.environment.set('user_email', response.email);",
+									"    console.log('Registration successful, token saved');",
+									"} else if (pm.response.code === 401) {",
+									"    console.log('Registration created user but auto-login failed. Use Login endpoint manually.');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ahmed Mohamed\",\n    \"email\": \"ahmed@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": "{{base_url}}/rest/auth/register",
+						"description": "Register a new account in the banking system"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('auth_token', response.token);",
+									"    pm.environment.set('user_id', response.id);",
+									"    pm.environment.set('user_email', response.email);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ahmed@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": "{{base_url}}/rest/auth/authenticate",
+						"description": "Authenticate user and get JWT token"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Hello Endpoint",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/rest/auth/hello",
+						"description": "Test endpoint to verify API is working"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication related endpoints"
+		},
+		{
+			"name": "Account Operations",
+			"item": [
+				{
+					"name": "Get Account Balance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{auth_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": "{{base_url}}/api/accounts/balance",
+						"description": "Get current authenticated user's account balance"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{auth_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": "{{base_url}}/api/accounts/transactions",
+						"description": "Get all transactions for the authenticated user's account"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Card Number",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{auth_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": "{{base_url}}/api/accounts/cardNumber",
+						"description": "Get the card number for the authenticated user's account"
+					},
+					"response": []
+				}
+			],
+			"description": "Account management endpoints (requires authentication)"
+		},
+		{
+			"name": "Transaction Operations",
+			"item": [
+				{
+					"name": "Deposit Money",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{auth_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cardNumber\": \"{{sample_card_number}}\",\n    \"amount\": 1000.50\n}"
+						},
+						"url": "{{base_url}}/api/transactions/deposit",
+						"description": "Deposit money to account using card number"
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw Money",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{auth_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cardNumber\": \"{{sample_card_number}}\",\n    \"amount\": 500.00\n}"
+						},
+						"url": "{{base_url}}/api/transactions/withdraw",
+						"description": "Withdraw money from account using card number"
+					},
+					"response": []
+				}
+			],
+			"description": "Transaction operations (deposit/withdraw) - requires authentication"
+		},
+		{
+			"name": "Token Validation",
+			"item": [
+				{
+					"name": "Validate Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{auth_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": "{{base_url}}/bank/token/validation",
+						"description": "Validate if the current JWT token is valid and not expired"
+					},
+					"response": []
+				}
+			],
+			"description": "Token validation endpoint"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{auth_token}}",
+			"auth_token": ""
+		}
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8081",
+			"type": "string"
+		},
+		{
+			"key": "sample_card_number",
+			"value": "5409442413636204",
+			"type": "string"
+		}
+	]
+}
