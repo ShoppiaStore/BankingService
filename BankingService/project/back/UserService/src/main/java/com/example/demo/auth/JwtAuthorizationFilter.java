@@ -21,10 +21,10 @@ import java.io.IOException;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtService jwtService;
+    private JwtService jwtService;  // Service to handle JWT logic
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService; // Loads user info from DB
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -32,7 +32,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         System.out.println("Filter thread: " + Thread.currentThread().getName());
 
         try {
-            System.out.println("try1");
             String authHeader = request.getHeader("Authorization");
             String accessToken = null;
             String userEmail = null;
@@ -40,17 +39,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String path = request.getServletPath();
 
             if (path.startsWith("/activateUser")) {
-                System.out.println("if1");
+
                 filterChain.doFilter(request, response); // skip JWT filter
                 return;
             }
             if (path.startsWith("/regenerateOtp")) {
-                System.out.println("if3");
+
                 filterChain.doFilter(request, response); // skip JWT filter
                 return;
             }
             if (path.startsWith("/rest/auth/")) {
-                System.out.println("if2");
+
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -72,7 +71,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 
 
-
+            // Extract token from header (remove "Bearer ")
             accessToken = authHeader.substring("Bearer ".length());
             Claims claims = jwtService.resolveClaims(request);
             userEmail = claims.getSubject();

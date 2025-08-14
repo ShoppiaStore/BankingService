@@ -122,28 +122,25 @@ public class TransactionController {
     }
 
     private boolean isTokenValid(String token) {
-        System.out.println("1");
+
         HttpHeaders headers = new HttpHeaders();
-        System.out.println("2");
+
         headers.set("Authorization", token);
 
-        System.out.println("3");
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        System.out.println("4");
 
         try {
-            System.out.println("5");
+
             ResponseEntity<String> response = restTemplate.exchange(
                     USER_SERVICE_URL,
                     HttpMethod.POST,
                     entity,
                     String.class
             );
-            System.out.println("6");
+
             return "valid token".equalsIgnoreCase(response.getBody());
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            System.out.println("7");
             System.out.println("HTTP Error: " + e.getStatusCode());
             System.out.println("Error Body: " + e.getResponseBodyAsString());
             return false;

@@ -80,10 +80,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private String generateCardNumber() {
+       // Create a Random object to generate random numbers
         Random random = new Random();
+
+        //StringBuilder to construct the card number efficiently
         StringBuilder cardNumber = new StringBuilder();
 
-        // نبدأ برقم البنك (مثلاً 4532)
+        // ppend the bank identification number
         cardNumber.append("4532");
 
         // باقي 12 رقم عشوائي
@@ -91,6 +94,7 @@ public class AccountServiceImpl implements AccountService {
             cardNumber.append(random.nextInt(10));
         }
 
+      //  Convert the StringBuilder to a String and return the complete card numbe
         return cardNumber.toString();
     }
 

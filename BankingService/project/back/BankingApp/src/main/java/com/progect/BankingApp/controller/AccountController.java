@@ -26,32 +26,41 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<ApiResponse> createAccount(@RequestBody AccountDto accountDto,
                                                      @RequestHeader("Authorization") String token) {
-        System.out.println(token);
+
         try {
+            // Validate the provided authentication token
             if (!isTokenValid(token)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new ApiResponse(false, "Invalid or expired token", null));
             }
 
+
+
+            // Extract user ID from the token
             int userId = getUserId(token).getBody();
 
             System.out.println("User ID extracted from token: " + userId);
 
             AccountDto createdAccount = accountService.createAccount(accountDto, userId);
 
+
+            // Return success response with created account data
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new ApiResponse(true, "Account created successfully", createdAccount));
 
         }
-
+        // Handle HTTP client errors (4xx status codes)
         catch (HttpClientErrorException e) {
             return ResponseEntity.status(e.getStatusCode())
                     .body(new ApiResponse(false, e.getStatusText(), null));
 
+
+            // Handle validation errors
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, e.getMessage(), null));
 
+            // Handle unexpected errors
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -75,7 +84,7 @@ public class AccountController {
 
             AccountDto accountDto = accountService.getAccountById(id);
             int userIdFromToken = getUserId(token).getBody();
-
+            // Check if the requesting user owns the account
             if (userIdFromToken != accountDto.getUserId()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new ApiResponse(false, "Forbidden: You do not own this account", null));
@@ -107,9 +116,11 @@ public class AccountController {
             return ResponseEntity.ok()
                     .body(new ApiResponse(true, "Account updated successfully", updatedAccount));
 
+            // Handle account not found errors
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(false, e.getMessage(), null));
+            // Handle unexpected errors
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "An error occurred while updating account", null));
@@ -138,6 +149,7 @@ public class AccountController {
         }
     }
 
+    // Endpoint to get all accounts for a specific user
     @GetMapping("/user")
     public ResponseEntity<ApiResponse> getAccountsForUser(@RequestHeader("Authorization") String token) {
         if (!isTokenValid(token)) {
@@ -153,57 +165,63 @@ public class AccountController {
     }
 
 
+    // Private method to validate authentication token with user service
     private boolean isTokenValid(String token) {
-        System.out.println("1");
-        HttpHeaders headers = new HttpHeaders();
-        System.out.println("2");
-        headers.set("Authorization", token);
-        System.out.println("3");
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        System.out.println("4");
 
+      //  Create HTTP headers object to store request headers
+        HttpHeaders headers = new HttpHeaders();
+
+         // Set the "Authorization" header with the token value
+        headers.set("Authorization", token);
+
+
+        //Wrap the headers into an HttpEntity object for the request مفيش body
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+
+        //Send POST request to USER_SERVICE_URL with headers and expect a String response.
         try {
-            System.out.println("5");
             ResponseEntity<String> response = restTemplate.exchange(
                     USER_SERVICE_URL,
                     HttpMethod.POST,
                     entity,
                     String.class
             );
-            System.out.println("6");
-            return "valid token".equalsIgnoreCase(response.getBody());
 
+            //Return true if the response body equals "valid token" (case-insensitive)
+            return "valid token".equalsIgnoreCase(response.getBody());
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            System.out.println("7");
             return false;
         }
     }
 
+    // Private method to extract user ID from authentication token
     private ResponseEntity<Integer> getUserId(String token) {
-        System.out.println("in getuserid");
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        System.out.println("in getuserid2");
 
         try {
-            System.out.println("in getuserid7");
             ResponseEntity<Integer> response = restTemplate.exchange(
                     USER_SERVICE_URL2,
                     HttpMethod.POST,
                     entity,
-                    Integer.class
+                    Integer.class // return int
             );
-            System.out.println("in getuserid3");
-
+            //Check if user ID is null or <= 0; if so, throw 401 Unauthorized exception
             if (response.getBody() == null || response.getBody() <= 0) {
                 throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Invalid user ID from token");
             }
-
+            // return the response containing the user ID
             return response;
+
+
+          //  Catch HTTP errors (4xx or 5xx) and rethrow with the same status code but a custom error message.
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            System.out.println("in getuserid4");
             throw new HttpClientErrorException(e.getStatusCode(), "Failed to extract user ID: " + e.getMessage());
         }
     }
+
+
 }

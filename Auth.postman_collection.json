@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "45d992e9-0b2f-4375-a15c-57183800e4cc",
+		"name": "Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "40721589",
+		"_collection_link": "https://mohammad-2269.postman.co/workspace/Mohammad-Workspace~3a6a641c-146a-4984-8740-0cdf5a4549d9/collection/42546196-45d992e9-0b2f-4375-a15c-57183800e4cc?action=share&source=collection_link&creator=40721589"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"a@gmail.com\",\r\n  \"password\": \"123\"\r\n\r\n  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:9994/rest/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"a@gmail.com\",\r\n  \"password\": \"123\",\r\n  \"phone\":\"01008435926\",\r\n  \"name\":\"ee\"\r\n\r\n  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:9994/rest/auth/register"
+			},
+			"response": []
+		},
+		{
+			"name": "verify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9994/rest/auth/verify?email=a@gmail.com&otp=703527",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9994",
+					"path": [
+						"rest",
+						"auth",
+						"verify"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "a@gmail.com"
+						},
+						{
+							"key": "otp",
+							"value": "703527"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
